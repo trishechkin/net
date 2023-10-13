@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "c856fb21-3900-4149-8dae-88fc82620a6e",
+		"name": "Net",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5187130"
+	},
+	"item": [
+		{
+			"name": "User Register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "default"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"firstName\": \"Дмитрий\",\r\n    \"secondName\": \"Тришечкин\",\r\n    \"birthDate\": \"1983-10-30\",\r\n    \"city\": \"Москва\",\r\n    \"biography\": \"Программирование\",\r\n    \"password\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/user/register",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"user",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "b86b8b0a-ca70-444d-b27c-957f17787eae",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8083/user/get/cc2c42e4-e186-4b6f-88d3-975ab70a6109",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"user",
+						"get",
+						"cc2c42e4-e186-4b6f-88d3-975ab70a6109"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"cc2c42e4-e186-4b6f-88d3-975ab70a6109\",\r\n    \"password\": \"1\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8083/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8083",
+					"path": [
+						"login"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

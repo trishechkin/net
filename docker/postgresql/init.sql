@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     guid        varchar(36) NOT NULL,
     first_name  varchar(50) NOT NULL,
     second_name varchar(50),
+    city        varchar(70) NOT NULL,
     birth_date  date,
     biography   text,
     password    varchar(255) NOT NULL,

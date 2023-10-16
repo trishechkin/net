@@ -30,7 +30,7 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
             secondName: $user->second_name,
             birthDate: $user->birth_date,
             biography: $user->biography,
-            city: 'city',
+            city: $user->city,
             uuid: $user->guid
         );
     }
@@ -58,13 +58,14 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
 
     public function save(User $user, string $hashPassword, string $token): User
     {
-        $queryInsert = 'INSERT INTO "user"(guid, first_name, second_name, birth_date, biography, password, token) '
-            . 'VALUES (:guid, :first_name, :second_name, :birth_date, :biography, :password, :token)';
+        $queryInsert = 'INSERT INTO "user"(guid, first_name, second_name, city, birth_date, biography, password, token) '
+            . 'VALUES (:guid, :first_name, :second_name, :city, :birth_date, :biography, :password, :token)';
 
         $paramInsert = [
             'guid' => $user->uuid,
             'first_name' => $user->firstName,
             'second_name' => $user->secondName,
+            'city' => $user->city,
             'birth_date' => $user->birthDate,
             'biography' => $user->biography,
             'password' => $hashPassword,

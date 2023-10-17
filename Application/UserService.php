@@ -3,6 +3,7 @@
 namespace Application;
 
 use Application\Dto\UserDto;
+use Application\Dto\UserSearchDto;
 use Domain\Exception\EntityNotFoundException;
 use Domain\Repository\UserRepositoryInterface;
 use Domain\VO\UserId;
@@ -26,18 +27,24 @@ class UserService
             throw new EntityNotFoundException("Пользователь [$guid] не найден");
         }
 
-        $now = new \DateTime();
-        $birthDate = \DateTime::createFromFormat('Y-m-d', $user->birthDate);
-        $interval = $now->diff($birthDate);
+        return UserDto::makeFromUser($user);
+    }
 
-        return new UserDto(
-            id: $user->uuid,
-            firstName: $user->firstName,
-            secondName: $user->secondName,
-            birthDate: $user->birthDate,
-            age: $interval->y,
-            city: $user->city,
-            biography: $user->biography
+    /**
+     * @return UserDto[]
+     */
+    public function search(UserSearchDto $userSearchDto): array
+    {
+        $userList = $this->userRepository->search(
+            prefixFirstName: $userSearchDto->prefixFirstName,
+            prefixSecondName: $userSearchDto->prefixSecondName
         );
+
+        $userDtoList = [];
+        foreach ($userList as $user) {
+            $userDtoList[] = UserDto::makeFromUser($user);
+        }
+
+        return $userDtoList;
     }
 }

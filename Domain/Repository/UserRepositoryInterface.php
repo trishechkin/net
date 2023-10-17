@@ -14,4 +14,6 @@ interface UserRepositoryInterface
     public function existToken(string $token): bool;
 
     public function save(User $user, string $hashPassword, string $token): User;
+
+    public function search(string $prefixFirstName, string $prefixSecondName): array;
 }

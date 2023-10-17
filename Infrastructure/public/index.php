@@ -40,7 +40,7 @@ $customErrorHandler = function (
     }
 
     if ($code === 0) {
-        $code = $exception->getCode();
+        $code = 500;
     }
 
     $payload = ['error' => $exception->getMessage()];
@@ -61,6 +61,8 @@ $app->get('/user/get/{id}', [UserController::class, 'get']);
 $app->post('/user/register', [UserController::class, 'register']);
 
 $app->post('/login', [UserController::class, 'login']);
+
+$app->get('/user/search', [UserController::class, 'search']);
 
 // Run app
 $app->run();

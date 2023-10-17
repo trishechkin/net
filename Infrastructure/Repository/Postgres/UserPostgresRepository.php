@@ -12,12 +12,12 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
     {
         $query = 'SELECT * FROM "user" WHERE guid = :guid';
 
-        $param = [
+        $paramList = [
             'guid' => $userId->getValue(),
         ];
 
         $statement = $this->connection->prepare($query);
-        $statement->execute($param);
+        $statement->execute($paramList);
 
         $user = $statement->fetch(\PDO::FETCH_OBJ);
 
@@ -39,13 +39,13 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
     {
         $query = 'SELECT token FROM "user" WHERE guid = :guid AND password = :password';
 
-        $param = [
+        $paramList = [
             'guid' => $userId->getValue(),
             'password' => $hashPassword,
         ];
 
         $statement = $this->connection->prepare($query);
-        $statement->execute($param);
+        $statement->execute($paramList);
 
         $user = $statement->fetch(\PDO::FETCH_OBJ);
 
@@ -61,7 +61,7 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
         $queryInsert = 'INSERT INTO "user"(guid, first_name, second_name, city, birth_date, biography, password, token) '
             . 'VALUES (:guid, :first_name, :second_name, :city, :birth_date, :biography, :password, :token)';
 
-        $paramInsert = [
+        $paramList = [
             'guid' => $user->uuid,
             'first_name' => $user->firstName,
             'second_name' => $user->secondName,
@@ -73,7 +73,7 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
         ];
 
         $statement = $this->connection->prepare($queryInsert);
-        $statement->execute($paramInsert);
+        $statement->execute($paramList);
 
         return $user;
     }
@@ -82,15 +82,49 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
     {
         $query = 'SELECT token FROM "user" WHERE token = :token';
 
-        $param = [
+        $paramList = [
             'token' => $token,
         ];
 
         $statement = $this->connection->prepare($query);
-        $statement->execute($param);
+        $statement->execute($paramList);
 
         $exist = $statement->fetch(\PDO::FETCH_OBJ);
 
         return $exist !== false;
+    }
+
+    public function search(string $prefixFirstName, string $prefixSecondName): array
+    {
+        //$query = 'SELECT * FROM "user" WHERE first_name LIKE "%:prefix_first_name" AND second_name LIKE "%:prefix_second_name"';
+        $query = 'SELECT * FROM "user" WHERE first_name ILIKE :prefix_first_name AND second_name ILIKE :prefix_second_name';
+
+        $paramPrefixFirstName = $prefixFirstName . '%';
+        $paramPrefixSecondName = $prefixSecondName . '%';
+
+        $statement = $this->connection->prepare($query);
+        $statement->bindParam('prefix_first_name', $paramPrefixFirstName);
+        $statement->bindParam('prefix_second_name', $paramPrefixSecondName);
+        $statement->execute();
+
+        $userList = $statement->fetchAll(\PDO::FETCH_OBJ);
+
+        if ($userList === false) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($userList as $user) {
+            $result[] =  new User(
+                firstName: $user->first_name,
+                secondName: $user->second_name,
+                birthDate: $user->birth_date,
+                biography: $user->biography,
+                city: $user->city,
+                uuid: $user->guid
+            );
+        }
+
+        return $result;
     }
 }

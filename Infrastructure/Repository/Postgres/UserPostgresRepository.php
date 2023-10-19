@@ -96,11 +96,10 @@ class UserPostgresRepository extends PostgresConnectionManager implements UserRe
 
     public function search(string $prefixFirstName, string $prefixSecondName): array
     {
-        //$query = 'SELECT * FROM "user" WHERE first_name LIKE "%:prefix_first_name" AND second_name LIKE "%:prefix_second_name"';
-        $query = 'SELECT * FROM "user" WHERE first_name ILIKE :prefix_first_name AND second_name ILIKE :prefix_second_name';
+        $query = 'SELECT * FROM "user" WHERE lower(first_name) LIKE :prefix_first_name AND lower(second_name) LIKE :prefix_second_name';
 
-        $paramPrefixFirstName = $prefixFirstName . '%';
-        $paramPrefixSecondName = $prefixSecondName . '%';
+        $paramPrefixFirstName = mb_strtolower($prefixFirstName) . '%';
+        $paramPrefixSecondName = mb_strtolower($prefixSecondName) . '%';
 
         $statement = $this->connection->prepare($query);
         $statement->bindParam('prefix_first_name', $paramPrefixFirstName);
